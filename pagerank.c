@@ -10,7 +10,7 @@ int main(int argc, char const *argv[]) {
      FILE *fp = fopen("Sample1/collection.txt", "r");
 
      int array[99];
-     int array2[99];
+    // int array2[99];
      int i = 0;
 
         fscanf(fp,"\n");
@@ -34,22 +34,31 @@ int main(int argc, char const *argv[]) {
             strcat(strC,strA+x);
             printf("%s\n",strC);
 
+            char c;
+            char arr3[999];
+              FILE *f2 = fopen(strC, "r"); //open speicific array
 
-              fp = fopen("strC", "r");
-              int k = 0;
-              fscanf(fp,"#start Section-1");
-              printf("no\n");
-              fscanf(fp,"\n");
+            c = getc(f2);
+            c = getc(f2);
 
-              while (fscanf(fp,"url%d " , &array2[k]) != EOF) {
+            while (c != '#' && c != EOF) {
+                if (c == 'l') {
+                    c = getc(f2);
+                    int u = 0;
+                    while (c != ' ') {
+                        arr3[u] = c;
+                        u++;
+                        c = getc(f2);
+                        arr3[u] = '\n';
+                    }
+                    printf("%s", arr3);
+                }
+                c = getc(f2);
+            }
 
-                  printf("%d\n", array2[k]);
-                  k++;
-              }
 
-
-            fclose(fp);
-             j++;
+            fclose(f2);
+            j++;
         }
 
     return 0;
