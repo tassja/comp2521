@@ -85,7 +85,7 @@ int addEdge(Graph g, char *src, char *dest)
 	int w = vertexID(dest,g->vertex,g->nV);
 	if (w < 0) {
 		if (g->nV >= g->maxV) return 0;
-		w = addVertex(dest,g->vertex,g->nV);
+		 w = addVertex(dest,g->vertex,g->nV);
 		g->nV++;
 	}
 	g->edges[v][w] = 1;
