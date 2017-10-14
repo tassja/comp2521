@@ -167,3 +167,20 @@ static int findNode(Link list, char *str, Link *cur, Link *pre)
 	*cur = curr; *pre = prev;
 	return (curr != NULL && strEQ(str,curr->val));
 }
+
+
+//more set functions
+
+char* findurlstring(Set s, int value)
+{
+	Link curr; = s->elems;
+	if (s == NULL || s->nelems == 0 || value > s->nelems)
+		return NULL;
+	else {
+		while (i < value) {
+			curr = curr->next;
+            i++;
+		}
+        return curr->val;
+	}
+}

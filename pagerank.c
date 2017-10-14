@@ -8,8 +8,8 @@
 
 typedef struct Ranks{
     char *url;
-    int degree;
     double pRank;
+    int degree;
 } Ranks;
 
 typedef struct RankCollection{
@@ -49,13 +49,25 @@ int main(int argc, char **argv) {
     //           iteration++;
     //    End While
 
-    //get set from readdata.c and graph
+    //get set from readdata.c and graph, seperate functions??
 
     RankCollection urldata;
     urldata->nurls = nElems(urls);
     urldata->all = malloc(sizeof(Ranks)*urldata->nurls);
+    while (i < urldata->nurls) { //populate url collection with the entered urls
+        urldata->data[i].url = findurlstring(urldata, i)
+        urldata->data[i].pRank = 0;
+        urldata->data[i].degree = 0;
+        i++;
+    }
 
+    calculatePageRank(urlgraph, seturls, d, diffPR, maxIteration);
+    writeRanksFile(seturls);
 
+    //free up memeroy
 
     return 0;
 }
+
+
+void calculatePageRank(Graph G, RankRep urlInfo, float d, float diffPR, int maxIter) {
