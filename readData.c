@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
         while (j <= size) {
             char num[3];
             sprintf(num,"%d",array[j]);
-
+            printf("%s\n", num);
             char * strA = "Sample1/url.txt", strC[50];
             int x = 11;
             strncpy(strC,strA,x); //goo.gl/rXuFz3
@@ -57,10 +57,10 @@ int main(int argc, char const *argv[]) {
                         c = getc(f2);
                         arr3[k][u] = '\0';
                     }
-                      insertInto(seen, arr3[k]);
-                      enterQueue(todo, arr3[k]);
-                      addEdge(webGraph,num,arr3[k]);
-                      printf("inserting edge between %s and %s\n", num, arr3[k]);
+                    insertInto(seen, arr3[k]);
+                    enterQueue(todo, arr3[k]);
+                    addEdge(webGraph,num,arr3[k]);
+
 
                  }
                  c = getc(f2);
@@ -71,6 +71,27 @@ int main(int argc, char const *argv[]) {
         }
 
         //int numofpages = k;
+        //int endofj = j;
+        // k = 1;
+        //
+        // while (k <= 7) {
+        //      insertInto(seen, arr3[k]);
+        //      enterQueue(todo, arr3[k]);
+        //      printf("hhh\n");
+        //      k++;
+        // }
+        //
+        // k = 0;
+        // j = 0;
+        // while (k < size) {
+        //     char num2[3];
+        //     sprintf(num2,"%d",array[j]);
+        //     addEdge(webGraph,num2,arr3[k]);
+        //     printf("inserting edge between %s and %s\n", num2, arr3[k]);
+        //     k++;
+        //     j++;
+        // }
+
         showSet(seen);
         showGraph(webGraph, 0);
         showGraph(webGraph, 1);
