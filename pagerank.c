@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 }
 
 
-void calculatePageRank(WebGraph urlgraph, RankRep urldata, float d, float diffPR, int maxIteration) {
+void calculatePageRank(WebGraph urlgraph, RankCollection urldata, float d, float diffPR, int maxIteration) {
     int N = nVertices(urlgraph);
     float *prevRanks = malloc(N*sizeof(int));
     int c;
@@ -126,12 +126,30 @@ void calculatePageRank(WebGraph urlgraph, RankRep urldata, float d, float diffPR
 }
 
 
-double win(int x, int y, RankRep urllists, WebGraph urlgraph){
+double win(int x, int y, RankCollection urllists, WebGraph urlgraph){
     int N = nVertices(urlgraph);
     int temp = 0;
     for (y = 0; y < N; y++) {
         if (array[x][y]) {
-            temp += urldata->data[y]->outlinks; //not right
+            temp += urldata->data[y]->inlinks; //not right
+        }
+    }
+
+    double total = ((urldata->data[x]->inlinks)/temp);
+
+    return total;
+}
+
+double wout(int x, int y, RankCollection urllists, WebGraph urlgraph){
+    int N = nVertices(urlgraph);
+    int temp = 0;
+    for (y = 0; y < N; y++) {
+        if (array[x][y]) {
+            if (urldata->data[y]->outlinks == 0) {
+                temp += 0.5;
+            }else{
+                temp += urldata->data[y]->outlinks;
+            }
         }
     }
 
