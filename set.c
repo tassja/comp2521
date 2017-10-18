@@ -173,7 +173,7 @@ static int findNode(Link list, char *str, Link *cur, Link *pre)
 
 char* findurlstring(Set s, int value)
 {
-    int i = 0;
+        int i = 0;
 	Link curr = s->elems;
 	if (s == NULL || s->nelems == 0 || value > s->nelems)
 		return NULL;
