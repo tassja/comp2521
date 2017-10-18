@@ -10,7 +10,6 @@
 int main(int argc, char const *argv[]) {
 
     Graph webGraph = newGraph(999);
-    Queue todo = newQueue();
     Set seen = newSet();
 
 
@@ -57,15 +56,22 @@ int main(int argc, char const *argv[]) {
                         c = getc(f2);
                         arr3[k][u] = '\0';
                     }
-                    insertInto(seen, arr3[k]);
-                    enterQueue(todo, arr3[k]);
-                    addEdge(webGraph,num,arr3[k]);
+
+                    //if (!isElem(seen,arr3[k])) {
+                        addEdge(webGraph,num,arr3[k]);
+                        insertInto(seen, arr3[k]);
+                        printf("inserting edge between %s and %s\n", num, arr3[k]);
+                    //}
+
+
+
 
 
                  }
                  c = getc(f2);
             }
             k++;
+            dropFrom(seen, arr3[k]);
             fclose(f2);
             j++;
         }
