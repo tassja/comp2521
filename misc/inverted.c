@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-// nameofgroup - Tom Day, Julian Jankowski, Tassja Kriek              //
+// Tom Day, z5115805                                                  //
 // F09B, Henry Zhao                                                   //
 // 20/10/2017                                                         //
 // COMP2521 assignment 2, Part 1, B                                   //
@@ -12,8 +12,6 @@
 #include <assert.h>
 #include <string.h>
 #include "inverted.h"
-
-#define BUFF 1000
 
 typedef struct wordList {
    WordNode first;
@@ -43,79 +41,73 @@ int main(int argc, char *argv[]) {
 
    WordList words = newWordList();
 
-   // load url files to open into array
-   FILE *fp = fopen("collection.txt", "r");
+   FILE *fp = fopen("Sample1/collection.txt", "r");
+
    fscanf(fp,"\n");
 
    int size;
-   int array[BUFF];
-   for (size = 0; fscanf(fp,"url%d " , &array[size]) != EOF; size++);
+   int array[99];
+   for (size = 0; fscanf(fp,"url%d " , &array[size]) != EOF; ++size);
+
    fclose(fp);
 
-   int i;
-   for (i = 0; i < size; i++) {
+   int j;
+   for (j = 0; j < size; ++j) {
 
-      char filename[BUFF];
-      char url[BUFF];
-      sprintf(url, "url%d", array[i]);
-      sprintf(filename, "url%d.txt", array[i]);
+      char filename[50];
+      char url[50];
+      sprintf(url, "url%d", array[j]);
+      sprintf(filename, "Sample1/url%d.txt", array[j]);
+      printf("%s\n", filename);
 
-      // open file corresponding to current array position
-      FILE *f2 = fopen(filename, "r");
 
-      char tmpString[BUFF];
-      fscanf(f2, "%s", tmpString);
-      while (strcmp(tmpString, "Section-2") != 0) {
-         fscanf(f2, "%s", tmpString);
+      FILE *f2 = fopen(filename, "r"); //open specified array
+
+      char str1[1000];
+      fscanf(f2, "%s", str1);
+      while (strcmp(str1, "Section-2") != 0) {
+         fscanf(f2, "%s", str1);
       }
-      fscanf(f2, "%s", tmpString);
+      fscanf(f2, "%s", str1);
      
 
-      // while reading words from section 2 add them to the list
-      // in alphabetical order and add the current url to the url
-      // list of the word
-      WordNode tmpWordNode;
-      UrlNode newUrl;
-      while (strcmp(tmpString, "#end") != 0) {
-         normalise(tmpString);
-         newUrl = newUrlNode(url);
-         tmpWordNode = findWord(words, tmpString);
-         if (tmpWordNode == NULL) {
-            // add word to list of words since it is not already in the list
-            tmpWordNode = newWordNode(tmpString);
-            addWordAlphabetically(words, tmpWordNode);
-         }
+      WordNode tmp1;
+      while (strcmp(str1, "#end") != 0) {
+         // Do Stuff here!!
+         //str1 = the current word
+         //strC = the currnet url
+         normalise(str1);
+         // add word to list of words (dont add duplicates)
          // add current url to word in the list
-         appendUrl(tmpWordNode->list, newUrl);
+         UrlNode newUrl = newUrlNode(url);
+         tmp1 = findWord(words, str1);
+         if (tmp1 == NULL) {
+            tmp1 = newWordNode(str1);
+            addWordAlphabetically(words, tmp1);
+         }
+         appendUrl(tmp1->list, newUrl);
 
          // get next word
-         fscanf(f2, "%s", tmpString);
+         fscanf(f2, "%s", str1);
       }
       fclose(f2);
    }
 
-   // print index to a file
-   FILE *invertedIndexFile;
-   invertedIndexFile = fopen("invertedIndex.txt", "w");
-   assert(invertedIndexFile != NULL);
-
    WordNode q;
    UrlNode r;
    for (q = words->first; q != NULL; q = q->next) {
-      fprintf(invertedIndexFile, "%s", q->word);
+      printf("%s", q->word);
       for (r = q->list->first; r != NULL; r = r->next) {
-         fprintf(invertedIndexFile, " %s", r->word);
+         printf(" %s", r->word);
       }
-      fprintf(invertedIndexFile, "\n");
+      printf("\n");
    }
-   fclose(invertedIndexFile);
 
    freeWordList(words);
 
    return EXIT_SUCCESS;
 }
 
-// Make lowercase and remove punctuation
 void normalise(char *str) {
    int i;
    for (i = 0; i < strlen(str); i++) {
@@ -129,7 +121,6 @@ void normalise(char *str) {
    return;
 }
 
-// return the node of the given word in the given list
 WordNode findWord(WordList l, char *word) {
    assert(l != NULL);
    if (l->first == NULL) {
@@ -144,7 +135,6 @@ WordNode findWord(WordList l, char *word) {
    return NULL;
 }
 
-// add url node to the end of the list
 void appendUrl(UrlList l, UrlNode node) {
    assert (l != NULL);
    if (l->first == NULL) {
@@ -157,7 +147,6 @@ void appendUrl(UrlList l, UrlNode node) {
    l->numUrls++;
 }
 
-// add node to the list in alphabetical order
 void addWordAlphabetically(WordList l, WordNode node) {
    assert (l != NULL);
    // Empty case
@@ -229,7 +218,6 @@ WordNode newWordNode(char *word) {
    return new;
 }
 
-// frees entire word list including the url lists within
 void freeWordList(WordList l) {
    WordNode currWord = l->first;
    WordNode nextWord;
