@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////
 // nameofgroup - Tom Day, Julian Jankowski, Tassja Kriek              //
 // F09B, Henry Zhao                                                   //
-// 20/10/2017                                                         //
-// COMP2521 assignment 2, Part 1, B                                   //
+// 21/10/2017                                                         //
+// COMP2521 assignment 2, Part 1 - B                                  //
 //                                                                    //
 // Inverted index                                                     //
 ////////////////////////////////////////////////////////////////////////

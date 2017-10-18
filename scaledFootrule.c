@@ -1,3 +1,12 @@
+////////////////////////////////////////////////////////////////////////
+// nameofgroup - Tom Day, Julian Jankowski, Tassja Kriek              //
+// F09B, Henry Zhao                                                   //
+// 21/10/2017                                                         //
+// COMP2521 assignment 2, Part 3                                      //
+//                                                                    //
+// Hybrid/Meta Search Engine using Rank Aggregation                   //
+////////////////////////////////////////////////////////////////////////
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -26,6 +35,12 @@ UrlList newUrlList();
 void freeUrlList(UrlList l);
 void addUrlAlphabetically(UrlList l, UrlNode node);
 
+void test(UrlList l[], int numFiles) {
+   int i = 0;
+   for (i = 0; i < numFiles; i++) {
+      printf("list[%d]: %s\n", i, l[i]->last->word);
+   }
+}
 
 int main(int argc, char *argv[]) {
    if (argc < 3) {
@@ -48,7 +63,9 @@ int main(int argc, char *argv[]) {
       }
       fclose(fp);
    }
+   test(list, numFiles);
    //print lists
+   
    UrlNode q;
    for (i = 0; i < numFiles; i++) {
       printf("list[%d]:\n", i);
@@ -61,7 +78,8 @@ int main(int argc, char *argv[]) {
    for (q = urlUnion->first; q != NULL; q = q->next) {
       printf("%s\n", q->word);
    }
-
+   
+   // free lists
    freeUrlList(urlUnion);
    for (i = 0; i < numFiles; i++) {
       freeUrlList(list[i]);
