@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 
     //get set from readdata.c and graph, seperate functions??
     Graph urlgraph = newGraph(999);
-    urlgraph = creategraph("collection.txt");
+    urlgraph = creategraph();
     RankCollection urldata;
     urldata.nurls = nVertices(urlgraph);
     urldata.data = malloc(sizeof(Ranks)*urldata.nurls);
@@ -82,15 +82,17 @@ int main(int argc, char **argv) {
                 urldata.data[i].outlinks++;
             }
         }
+        //printf("outlinks:%d\n", urldata.data[i].outlinks);
     }
 
     //calculate inlinks for each url
     for (j = 0; j < nVertices(urlgraph); j++) {
         for (i = 0; i < nVertices(urlgraph); i++) {
             if (urlgraph->edges[i][j] == 1) {
-                urldata.data[i].inlinks++;
+                urldata.data[j].inlinks++;
             }
         }
+        printf("inlinks:%d\n", urldata.data[j].inlinks);
     }
 
 
@@ -107,13 +109,13 @@ void calculatePageRank(Graph urlgraph, RankCollection urldata, float d, float di
     for (c = 0; c < N; c++) {
         urldata.data[c].pRank = 1/(float)N;
         urldata.data[c].prevpRank = 1/(float)N;
+
         //prevRanks[c] = 1/(float)N;     //for calculating diff
     }
 
     int iteration = 0;
     float diff = diffPR;
     float sum = 0;
-
     while ((iteration < maxIteration) && diff >= (diffPR)) {
         int k,w;
             for (k = 0; k < N; k++) {
@@ -125,6 +127,7 @@ void calculatePageRank(Graph urlgraph, RankCollection urldata, float d, float di
                 }
                 urldata.data[k].pRank = ((1-d)/N)+(d*sum);
                 diff += fabs((urldata.data[k].pRank) = ((((1-d)/N)+(d*sum))-(urldata.data[k].prevpRank)));
+                printf("%lf\n", diff);
             }
         iteration++;
     }
@@ -132,20 +135,25 @@ void calculatePageRank(Graph urlgraph, RankCollection urldata, float d, float di
 }
 
 
-double win(int x, int y, RankCollection urllists,Graph g){
+double win(int x, int y, RankCollection urldata,Graph g){
     int N = nVertices(g);
     int temp = 0;
     for (y = 0; y < N; y++) {
         if (g->edges[x][y]) {
-            temp += urldata.data[y].inlinks; //not right
+            //printf("y is: %d\n", y);
+            //printf("inlinks are: %d\n", urldata.data[i].inlinks);
+            temp += urldata.data[y].inlinks;
+            //printf("temp is:%d\n", temp);
         }
-        printf("%d\n", temp);
+        //printf("%d\n", temp);
+
     }
     double total = ((urldata.data[x].inlinks)/temp);
+    printf("win total: %lf\n", total);
     return total;
 }
 
-double wout(int x, int y, RankCollection urllists, Graph g){
+double wout(int x, int y, RankCollection urldata, Graph g){
     int N = nVertices(g);
     int temp = 0;
     for (y = 0; y < N; y++) {
@@ -156,8 +164,9 @@ double wout(int x, int y, RankCollection urllists, Graph g){
                 temp += urldata.data[y].outlinks;
             }
         }
-        printf("%d\n", temp);
+        //printf("%d\n", temp);
     }
     double total = ((urldata.data[x].outlinks)/temp);
+    printf("wout total: %lf\n", total);
     return total;
 }
