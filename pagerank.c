@@ -31,6 +31,15 @@ typedef struct RankCollection{
     int nurls;
 } RankCollection;
 
+typedef unsigned char Num;
+
+typedef struct GraphRep {
+	int   nV;
+	int   maxV;
+	char  **vertex;
+	Num   **edges;
+} GraphRep;
+
 RankCollection urldata;
 void calculatePageRank(Graph,RankCollection,float,float,int);
 Ranks *newRank();
@@ -39,7 +48,7 @@ double win(int, int, RankCollection,Graph);
 double wout(int, int, RankCollection,Graph);
 
 int main(int argc, char **argv) {
-    int i; //iterator
+    int i = 0; //iterator
 
     if(argc != 4) {
         fprintf(stderr, "Usage: %s d diffPR maxIterations\n", argv[0]);
@@ -65,7 +74,7 @@ int main(int argc, char **argv) {
         urldata.data[i].inlinks = 0;
         i++;
     }
-    int j,c;
+    int j;
     //calculate outlinks for each url
     for (i = 0; i < nVertices(urlgraph); i++) {
         for (j = 0; j < nVertices(urlgraph); j++) {
@@ -93,8 +102,8 @@ int main(int argc, char **argv) {
 
 void calculatePageRank(Graph urlgraph, RankCollection urldata, float d, float diffPR, int maxIteration) {
     int N = nVertices(urlgraph);
-    float *prevRanks = malloc(N*sizeof(int));
-    int c,i;
+    //float *prevRanks = malloc(N*sizeof(int));
+    int c;
     for (c = 0; c < N; c++) {
         urldata.data[c].pRank = 1/(float)N;
         urldata.data[c].prevpRank = 1/(float)N;
@@ -107,7 +116,7 @@ void calculatePageRank(Graph urlgraph, RankCollection urldata, float d, float di
 
     while ((iteration < maxIteration) && diff >= (diffPR)) {
         int k,w;
-            for (k = 0; i < N; k++) {
+            for (k = 0; k < N; k++) {
                 urldata.data[k].prevpRank = urldata.data[k].pRank;
                 for (w = 0; w < N; w++) {
                     if (urlgraph->edges[k][w]) {

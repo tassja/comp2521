@@ -14,5 +14,6 @@ int   addEdge(Graph,char *,char *);
 int   nVertices(Graph);
 int   isConnected(Graph, char *, char *);
 void  showGraph(Graph,int);
+//int getNumOfCor(Graph, int, int);
 
 #endif
