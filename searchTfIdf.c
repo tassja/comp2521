@@ -155,7 +155,7 @@ int main (int argc, char *argv[]){
     }
     
     //Print the top 30 URLS
-    for(int i = 0; i < 30 && Urls[i].tfidf > 0; i++){
+    for(i = 0; i < 30 && Urls[i].tfidf > 0; i++){
         printf("%s: %lf\n", Urls[i].name, Urls[i].tfidf);
     }
     fclose(fp);
