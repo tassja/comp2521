@@ -7,7 +7,7 @@
 // Calculate Weighted PageRanks                                       //
 // graph.c ADT courtesy of John Shepherd, September 2015              //
 ////////////////////////////////////////////////////////////////////////
-
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
