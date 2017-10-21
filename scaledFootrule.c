@@ -276,7 +276,7 @@ void printMinW(UrlList list[], int numFiles, UrlNode permutation[], float length
    }
 
    // print the minimum
-   printf("%f\n", min);
+   printf("%.6f\n", min);
    for (tmp = minList->first; tmp != NULL; tmp = tmp->next) {
       printf("%s\n", tmp->word);
    }
