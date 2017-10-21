@@ -6,15 +6,14 @@
 #include "queue.h"
 #include "set.h"
 
-
-int main(int argc, char const *argv[]) {
+Graph creategraph(char *collection){
+//int main(int argc, char const *argv[]) {
 
     Graph webGraph = newGraph(999);
-    Queue todo = newQueue();
     Set seen = newSet();
 
 
-     FILE *fp = fopen("Sample1/collection.txt", "r");
+     FILE *fp = fopen("Sample1/collection.txt", "r"); // give "collection.txt"
 
      int array[99];
      int i = 0;
@@ -32,14 +31,14 @@ int main(int argc, char const *argv[]) {
         while (j <= size) {
             char num[3];
             sprintf(num,"%d",array[j]);
-
+            //printf("%s\n", num);
             char * strA = "Sample1/url.txt", strC[50];
             int x = 11;
             strncpy(strC,strA,x); //goo.gl/rXuFz3
             strC[x] = '\0';
             strcat(strC,num);
             strcat(strC,strA+x);
-            printf("%s\n",strC);
+            //printf("%s\n",strC);
 
             char c;
 
@@ -57,22 +56,122 @@ int main(int argc, char const *argv[]) {
                         c = getc(f2);
                         arr3[k][u] = '\0';
                     }
-                      insertInto(seen, arr3[k]);
-                      enterQueue(todo, arr3[k]);
-                      addEdge(webGraph,num,arr3[k]);
-                      printf("inserting edge between %s and %s\n", num, arr3[k]);
 
+                    //if (!isElem(seen,arr3[k])) {
+                        addEdge(webGraph,num,arr3[k]);
+                        insertInto(seen, arr3[k]);
+                        //printf("inserting edge between %s and %s\n", num, arr3[k]);
+                    //}
                  }
                  c = getc(f2);
             }
             k++;
+            //dropFrom(seen, arr3[k]);
             fclose(f2);
             j++;
         }
 
         //int numofpages = k;
-        showSet(seen);
-        showGraph(webGraph, 0);
+        //int endofj = j;
+        // k = 1;
+        //
+        // while (k <= 7) {
+        //      insertInto(seen, arr3[k]);
+        //      enterQueue(todo, arr3[k]);
+        //      printf("hhh\n");
+        //      k++;
+        // }
+        //
+        // k = 0;
+        // j = 0;
+        // while (k < size) {
+        //     char num2[3];
+        //     sprintf(num2,"%d",array[j]);
+        //     addEdge(webGraph,num2,arr3[k]);
+        //     printf("inserting edge between %s and %s\n", num2, arr3[k]);
+        //     k++;
+        //     j++;
+        // }
+
+        //showSet(seen);
+        //showGraph(webGraph, 0);
         showGraph(webGraph, 1);
-    return 0;
+
+return webGraph;
 }
+// Graph creategraph(char *collection){
+//     Graph webGraph = newGraph(999);
+//     Set seen = newSet();
+//     FILE *fp = fopen(collection, "r"); // give "collection.txt"
+//
+//     char array[99];
+//     int i = 0;
+//     int j = 0;
+//     int k = 0;
+//     char arr3[999][999];
+//
+//        fscanf(fp,"\n");
+//        while (fscanf(fp,"url%s " , &array[i]) != EOF) {
+//            while (j < 8) {
+//                printf("%s\n", array[i][j]);
+//            }
+//
+//            i++;
+//        }
+//        printf("%c\n", array[i]);
+//       fclose(fp);
+//       int size = i;
+//       i = 0;
+//       while (i <= size) {
+//         //   char strC[9];
+//         //   char num[3];
+//         //   sprintf(num,"%c",array[i]);
+//         //   strncpy(strC,array,2);
+//         //   strcat(strC,".txt");
+//         //   printf("%s\n",strC);
+//           char c;
+//
+//           char num[3];
+//            sprintf(num,"%d",array[i]);
+//           printf("%s\n", num);
+//           char * strA = "/url.txt", strC[50];
+//                       int x = 4;
+//                        strncpy(strC,strA,x); //goo.gl/rXuFz3
+//                        strC[x] = '\0';
+//                        strcat(strC,num);
+//                        strcat(strC,strA+x);
+//                        printf("%s\n",strC);
+//
+//
+//           FILE *f2 = fopen(strC, "r"); //open specified array
+//           c = getc(f2);
+//           c = getc(f2);
+//
+//           while (c != '#' && c != EOF) {
+//               if (c == 'l') {
+//                   c = getc(f2);
+//                   int u = 0;
+//                   while (c != ' ') {
+//                       arr3[k][u] = c;
+//                       u++;
+//                       c = getc(f2);
+//                       arr3[k][u] = '\0';
+//                   }
+//
+//                   //if (!isElem(seen,arr3[k])) {
+//                 addEdge(webGraph,num,arr3[k]);
+//                 insertInto(seen,arr3[k]);
+//                 printf("inserting edge between %s and %s\n", num, arr3[k]);
+//                   //}
+//                }
+//             c = getc(f2);
+//           }
+//         k++;
+//           //dropFrom(seen, arr3[k]);
+//         fclose(f2);
+//         i++;
+//       }
+//       showGraph(webGraph, 0);
+//       showGraph(webGraph, 1);
+//       return webGraph;
+// }
