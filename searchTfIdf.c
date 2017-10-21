@@ -11,6 +11,7 @@ struct url{
 
 double termf(char *term, char *url) {
     int i = 0;
+    int j = 0;
     char *lines[1000];
     int count = 0;
     int tf = 0;
@@ -33,8 +34,8 @@ double termf(char *term, char *url) {
     }
     
     for(; i < count; ++i){
-        for(int j = 0; lines[i][j] > 20; j++){ lines[i][j] = tolower(lines[i][j]); } //Convert all letters to lower case
-        for(int j = 0; j < strlen(lines[i]); ++j){
+        for(j = 0; lines[i][j] > 20; j++){ lines[i][j] = tolower(lines[i][j]); } //Convert all letters to lower case
+        for(j = 0; j < strlen(lines[i]); ++j){
             if(ispunct(lines[i][j])){ lines[i][j] = 0; } //Remove all punctuation
         }
         //printf("%s %s\n", term, lines[i]);
@@ -103,15 +104,16 @@ double getIdf(char *url, char *term){
 
 int main (int argc, char *argv[]){
     FILE * fp;
+    int i = 0;
+    int j = 0;
     //printf("%s\n", argv[1]);
     struct url Urls[100];
-    for(int i = 0; i < 100; ++i){
+    for(i = 0; i < 100; ++i){
         Urls[i].tfidf = -1.0;
     }
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
-    double tfidf = 0;
 
     fp = fopen("invertedIndex.txt", "r");
     if (fp == NULL)
@@ -120,11 +122,11 @@ int main (int argc, char *argv[]){
     //For each URL, perform TFIDF for each URL FOR EACH TERM
     while ((read = getline(&line, &len, fp)) != -1) {
         char *splitLine = strtok(line, " \n");
-        for(int i = 0; i < argc; ++i){
+        for(i = 0; i < argc; ++i){
             if(splitLine != NULL && !strcmp(argv[i], splitLine)){
                 splitLine = strtok(NULL," \n"); //Get next URL
                 while(splitLine != NULL){
-                    for(int j = 0; j < 100; ++j){
+                    for(j = 0; j < 100; ++j){
                         if(Urls[j].tfidf == -1.0){
                             strcpy(Urls[j].name, splitLine);
                             Urls[j].tfidf = getIdf(splitLine, argv[i]);
@@ -142,8 +144,8 @@ int main (int argc, char *argv[]){
     }
     
     //Sort each URL by TFIDF (Bubble sort in DESC order)
-    for (int i = 0 ; i < 100 && Urls[i].tfidf > 0; ++i) {
-        for (int j = 0 ; j < 100 - i - 1 && Urls[j].tfidf > 0; ++j) {
+    for (i = 0 ; i < 100 && Urls[i].tfidf > 0; ++i) {
+        for (j = 0 ; j < 100 - i - 1 && Urls[j].tfidf > 0; ++j) {
             if (Urls[j].tfidf < Urls[j+1].tfidf){
                 struct url swap = Urls[j];
                 Urls[j] = Urls[j+1];
@@ -157,4 +159,5 @@ int main (int argc, char *argv[]){
         printf("%s: %lf\n", Urls[i].name, Urls[i].tfidf);
     }
     fclose(fp);
+    return 0;
 }
