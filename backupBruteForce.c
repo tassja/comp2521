@@ -11,9 +11,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include "scaledFootrule.h"
 
 #define BUFF 1000
+
+typedef struct urlNode *UrlNode;
+typedef struct urlList *UrlList;
 
 typedef struct urlList {
    UrlNode first;
@@ -28,60 +30,76 @@ typedef struct urlNode {
    UrlNode prev;
 } urlNode;
 
+void appendUrl(UrlList l, UrlNode node);
+UrlNode newUrlNode(char *url);
+UrlList newUrlList();
+void freeUrlList(UrlList l);
+void addUrlAlphabetically(UrlList l, UrlNode node);
+void scaledFootrule(UrlList list[], int numFiles, UrlList permutation);
+int factorial(int a);
+float absVal(float a);
+void permutate(UrlList list[], int numFiles, UrlList ranked, int permutation[], float length);
 
 int main(int argc, char *argv[]) {
-   // checkin that there is atleat one input list
-   // will return W = 0 for a single list and the minimum
-   // W otherwise
-   if (argc < 2) {
+   if (argc < 3) {
       printf("Too few arguments!\n");
       return EXIT_FAILURE;
    }
-   
-   // adding going through all of the files and storing their
-   //contents in an array of lists call list. The union of these files
-   // is also stored in urlUnion in alphabetical order
-   int i; 
+   int i;
    FILE *fp;
-   char tmp[BUFF];
    int numFiles = argc - 1;
+   char tmp[BUFF];
    UrlList list[numFiles];
    UrlList urlUnion = newUrlList();
-   // for each file
+
    for (i = 0; i < numFiles; i++) {
       list[i] = newUrlList();
       fp = fopen(argv[i + 1], "r");
-      // for every url listed in the file
-      while (fscanf(fp, "%s", tmp) == 1) {
-         //add url to list and union
+      while (fscanf(fp, "%s", tmp) == 1) {         
          appendUrl(list[i], newUrlNode(tmp));
          addUrlAlphabetically(urlUnion, newUrlNode(tmp));
       }
       fclose(fp);
    }
-   
-   // loading urlUnion list int and array called urlUnionArray
-   UrlNode *urlUnionArray = calloc(urlUnion->numUrls, sizeof(urlNode));
-   assert(urlUnionArray != NULL);
-   UrlNode tmpNode = urlUnion->first;
-   for (i = 0; i < urlUnion->numUrls; i++) {
-      urlUnionArray[i] = tmpNode;
-      tmpNode = tmpNode->next;
+   //print lists
+   /* 
+   UrlNode q;
+   for (i = 0; i < numFiles; i++) {
+      printf("list[%d]:\n", i);
+      for (q = list[i]->first; q != NULL; q = q->next) {
+         printf("%s\n", q->word);
+      }
    }
 
-   // calculate W for every permutation and print the minumum
-   printMinW(list, numFiles, urlUnionArray, urlUnion->numUrls);
+   printf("urlUnion:\n");
+   for (q = urlUnion->first; q != NULL; q = q->next) {
+      printf("%s\n", q->word);
+   }
+   */ 
+   
+   // printing answer
+   //UrlNode s;
+   UrlList rankedList = newUrlList();
+   float W = scaledFootrule(list, numFiles, rankedList, urlUnion);
 
-   // free lists and arrays
+   printf("%.6f\n", W);
+   //for (s = rankedList->first; s != NULL; s = s->next) {
+   //   printf("%s\n", s->word);
+   //}
+
+
+   int array[5] = {1, 2, 3, 4, 5};
+   permutate(array, 5);
+
+   // free lists
+   //freeUrlList(rankedList);
    freeUrlList(urlUnion);
-   free(urlUnionArray);
    for (i = 0; i < numFiles; i++) {
       freeUrlList(list[i]);
    }
 
    return EXIT_SUCCESS;
 }
-
 
 void appendUrl(UrlList l, UrlNode node) {
    assert (l != NULL);
@@ -99,7 +117,6 @@ void appendUrl(UrlList l, UrlNode node) {
 UrlNode newUrlNode(char *url) {
    UrlNode new = malloc(sizeof(urlNode));
    new->word = calloc(sizeof(char), strlen(url) + 1);
-   assert(new->word != NULL);
    strcpy(new->word, url);
    new->next = NULL;
    new->prev = NULL;
@@ -168,40 +185,37 @@ void addUrlAlphabetically(UrlList l, UrlNode node) {
    l->numUrls++;
 }
 
-float calculateW(UrlList list[], int numFiles, UrlNode permutation[], float numUrls) {
+void scaledFootrule(UrlList list[], int numFiles, UrlList permutation) {
 
    int i;
-   int j;
    float pos;
-   float rank = 1; // start from the first rank (position) in the union
-   float ans = 0; // initialise the answer sum to 0
-   UrlNode unionCurr;
-   UrlNode fileCurr;
+   float ans = 0;
+   UrlNode tmp1;
+   UrlNode tmp2;
+   float rank;
 
+   rank = 1;
    // foreach url in union
-   for (i = 0; i < numUrls; i++) {
-      unionCurr = permutation[i];
-      // for each file
-      for (j = 0; j < numFiles; j++) {
+   for (tmp1 = permutation->first; tmp1 != NULL; tmp1 = tmp1->next) {
+      // find the url in each file
+      for (i = 0; i < numFiles; i++) {
          pos = 1;
-         // for each url in the file (find the url in the file)
-         for (fileCurr = list[j]->first; fileCurr != NULL; fileCurr = fileCurr->next) {
-            // checking if you have found the url
-            if (strcmp(unionCurr->word, fileCurr->word) == 0) {
+         for (tmp2 = list[i]->first; tmp2 != NULL; tmp2 = tmp2->next) {
+            if (strcmp(tmp1->word, tmp2->word) == 0) {
                //apply formula on url
-               ans += absVal(pos/list[j]->numUrls - rank/numUrls);
+               ans += absVal(pos/list[i]->numUrls - rank/permutation->numUrls);
             }
-            pos++; // increment to the next position (rank) in the file
+            pos++;
          }
       }
-      rank++; // increment to the next rank (position) in the union
+      rank++;
    }
-   return ans;
+   permutation->W = 0;
 }
 
-long factorial(int a) {
+int factorial(int a) {
    int i;
-   long ans = 1;
+   int ans = 1;
    for (i = 1; i <= a; i++) {
       ans = ans*i;
    }
@@ -213,62 +227,40 @@ float absVal(float a) {
    return -a;
 }
 
-void printMinW(UrlList list[], int numFiles, UrlNode permutation[], float length) {
+void permutate(UrlList list[], int numFiles, UrlList ranked, int permutation[], float length) {
 
-   long numPerms = factorial(length); 
 
-   int *array = calloc(length, sizeof(int));
-   assert(array != NULL);
-   float tmpAns;
-   float min;
-   UrlList minList;
+   int count = 0;
+   int numPerms = factorial(length); 
 
+   UrlList array = calloc(numPerms, sizeof(urlList));
    int i;
-   int j;
-   UrlNode tmp;
-   
-   // setting array[length] = {0};
-   for (i = 0; i < length; i++) array[i] = 0;
-   
-   // calculating scaledFootrule for initial (alphabetical) permutation
-   // and setting that as the minimum that we have seen so far
-   tmpAns = calculateW(list, numFiles, permutation, length);
-   min = tmpAns;
-   minList = newUrlList();
-   // loading inital permutation into permlist[0]
-   for (i = 0; i < length; i++) {
-      appendUrl(minList, newUrlNode(permutation[i]->word));
-   }
 
-   // using non-reccursive Heap's algorithm to compute all
-   // of the permutations (from Heap's algorithm wiki)
+   for (i = 0; i < length; i++) array[i] = 0;
+   //output
+   scaledFootrule(list, numFiles, ranked, array[count]);
+   count++;
+
+   int tmp;
+   int j;
+
    i = 0;
    while (i < length) {
       if (array[i] < i) {
          if (i % 2 == 0) {
-            //swap permutation[0] and permutation[i]
+            //swap A[0] and A[i]
             tmp = permutation[0];
             permutation[0] = permutation[i];
             permutation[i] = tmp;
          } else {
-            // swap permutation[array[i]] and permutation[i])
+            // swap A[array[i]] and A[i])
             tmp = permutation[array[i]];
             permutation[array[i]] = permutation[i];
             permutation[i] = tmp;
          }
-         // New permutation
-         // calculate the scaledFootrule for this permutationand store
-         // the answer in tmpAns. If this is the minimum also store
-         // the permutation in minList
-         tmpAns = calculateW(list, numFiles, permutation, length);
-         if (tmpAns < min) {
-            freeUrlList(minList);
-            UrlList minList = newUrlList();
-            min = tmpAns;
-            for (j = 0; j < length; j++) {
-               appendUrl(minList, newUrlNode(permutation[j]->word));
-            }
-         }
+         //output
+         scaledFootrule(list, numFiles, array[count]);
+         count++;
          array[i]++;
          i = 0;
       } else {
@@ -277,13 +269,6 @@ void printMinW(UrlList list[], int numFiles, UrlNode permutation[], float length
       }
    }
 
-   // print the minimum
-   printf("%f\n", min);
-   for (tmp = minList->first; tmp != NULL; tmp = tmp->next) {
-      printf("%s\n", tmp->word);
-   }
+   printf("TEST: %f\n", array[0]->W);
 
-   // free array and list
-   free(array);
-   freeUrlList(minList);
 }

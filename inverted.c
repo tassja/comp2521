@@ -52,17 +52,20 @@ int main(int argc, char *argv[]) {
    for (size = 0; fscanf(fp,"url%d " , &array[size]) != EOF; size++);
    fclose(fp);
 
+   // for each url file
    int i;
    for (i = 0; i < size; i++) {
 
+      // load current filename / url
       char filename[BUFF];
       char url[BUFF];
       sprintf(url, "url%d", array[i]);
       sprintf(filename, "url%d.txt", array[i]);
 
-      // open file corresponding to current array position
+      // opencurrent file
       FILE *f2 = fopen(filename, "r");
 
+      // get to section 2 by scanning until "Section-2" is found
       char tmpString[BUFF];
       fscanf(f2, "%s", tmpString);
       while (strcmp(tmpString, "Section-2") != 0) {
@@ -70,16 +73,17 @@ int main(int argc, char *argv[]) {
       }
       fscanf(f2, "%s", tmpString);
      
-
       // while reading words from section 2 add them to the list
       // in alphabetical order and add the current url to the url
-      // list of the word
+      // list of the current word
       WordNode tmpWordNode;
       UrlNode newUrl;
+      // while still in section 2
       while (strcmp(tmpString, "#end") != 0) {
          normalise(tmpString);
          newUrl = newUrlNode(url);
          tmpWordNode = findWord(words, tmpString);
+         // if word is not in words list
          if (tmpWordNode == NULL) {
             // add word to list of words since it is not already in the list
             tmpWordNode = newWordNode(tmpString);
@@ -87,7 +91,6 @@ int main(int argc, char *argv[]) {
          }
          // add current url to word in the list
          appendUrl(tmpWordNode->list, newUrl);
-
          // get next word
          fscanf(f2, "%s", tmpString);
       }
@@ -101,8 +104,10 @@ int main(int argc, char *argv[]) {
 
    WordNode q;
    UrlNode r;
+   // for every word in words
    for (q = words->first; q != NULL; q = q->next) {
       fprintf(invertedIndexFile, "%s", q->word);
+      // for every url in current word
       for (r = q->list->first; r != NULL; r = r->next) {
          fprintf(invertedIndexFile, " %s", r->word);
       }
@@ -115,28 +120,34 @@ int main(int argc, char *argv[]) {
    return EXIT_SUCCESS;
 }
 
-// Make lowercase and remove punctuation
+// Make lowercase and remove specified
+// punctuation if they are at the end of a word
 void normalise(char *str) {
    int i;
    for (i = 0; i < strlen(str); i++) {
+      // uppercase to lowercase
       if (str[i] >= 'A' && str[i] <= 'Z') {
          str[i] = str[i] + ('a' - 'A');
-      } else if (str[i] < 'a' || str[i] > 'z') {
-         str[i] = '\0';
-         return;
       }
+   }
+   // checking for specified punctuation at the end of a word
+   i--;
+   if (str[i] == '.' || str[i] == ',' || str[i] == ';' || str[i] == '?') {
+      str[i] = '\0';
    }
    return;
 }
 
-// return the node of the given word in the given list
+// return pointer to the node of the given word in the given list
 WordNode findWord(WordList l, char *word) {
    assert(l != NULL);
+   // return NULL if list is empty
    if (l->first == NULL) {
       return NULL;
    }
    WordNode tmp;
    for (tmp = l->first; tmp != NULL; tmp = tmp->next) {
+      // return pointer to the node contatining the specified word
       if (strcmp(tmp->word, word) == 0) {
          return tmp;
       }

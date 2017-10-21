@@ -18,4 +18,3 @@ void freeWordList(WordList l);
 
 
 #endif
-
