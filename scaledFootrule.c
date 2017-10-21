@@ -215,8 +215,6 @@ float absVal(float a) {
 
 void printMinW(UrlList list[], int numFiles, UrlNode permutation[], float length) {
 
-   long numPerms = factorial(length); 
-
    int *array = calloc(length, sizeof(int));
    assert(array != NULL);
    float tmpAns;
